@@ -1,0 +1,33 @@
+//按鈕
+.btn {
+    background-color: $btnBGC;
+    color: #FFFF;
+    border-radius: $btnBR;
+    padding: 8px 25px;
+    border: none;
+    cursor: pointer;
+}
+
+//商品數量加減按鈕
+.amount button {
+    border-radius: 50%;
+    background-color: transparent;
+    cursor: pointer;
+    border: rgba(177, 36, 26, 1) 1px solid;
+    color: rgba(177, 36, 26, 1);
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    text-align: center;
+}
+
+//商品數量加減的按鈕代碼如下
+// <button><i class="fa-solid fa-minus"></i></button>
+//<button><i class="fa-solid fa-plus"></i></button>
+
+// input
+.input {
+    border-radius: $inputBR;
+    border: 1px solid #6B380D;
+    background-color: #F9F1E5;
+}
