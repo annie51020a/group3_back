@@ -128,4 +128,8 @@
         }
     }
 }
+
+header {
+    display: none;
+}
 </style>
