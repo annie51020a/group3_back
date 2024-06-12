@@ -1,5 +1,14 @@
 <template>
-    <div>
-        訂單管理
-    </div>
+    <MenuList />
 </template>
+
+<script>
+
+import MenuList from '@/components/home/MenuList.vue';
+
+export default {
+    components: {
+        MenuList,
+    }
+}
+</script>

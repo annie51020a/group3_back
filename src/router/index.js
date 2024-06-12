@@ -20,7 +20,7 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('@/views/LoginAdmin.vue')
+      component: () => import('@/components/home/LoginAdmin.vue')
     },
     {
       path: '/newsmanage',

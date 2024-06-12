@@ -1,5 +1,14 @@
 <template>
-    <div>
-        後台人員管理
-    </div>
+    <MenuList />
 </template>
+
+<script>
+
+import MenuList from '@/components/home/MenuList.vue';
+
+export default {
+    components: {
+        MenuList,
+    }
+}
+</script>

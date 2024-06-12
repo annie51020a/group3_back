@@ -128,8 +128,4 @@
         }
     }
 }
-
-header {
-    display: none;
-}
 </style>
