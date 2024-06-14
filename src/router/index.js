@@ -48,6 +48,11 @@ const router = createRouter({
       component: () => import('@/views/OrderManage.vue')
     },
     {
+      path: '/customermanage',
+      name: 'customermanage',
+      component: () => import('@/views/CustomerManage.vue')
+    },
+    {
       path: '/adminmanage',
       name: 'adminmanage',
       component: () => import('@/views/AdminManage.vue')
