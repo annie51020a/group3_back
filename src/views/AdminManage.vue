@@ -5,7 +5,7 @@
             <div class="title-box">
                 <h1>後台人員管理</h1>
                 <p>使用者:{{ store.$state.currentAccount }}</p>
-                <button class="sign-out">登出</button>
+                <button @click="memsignout()" class="sign-out">登出</button>
             </div>
             <button class="add-admin">+新增</button>
 
@@ -143,7 +143,7 @@ export default {
     methods: {
         async memLogin() {
             try {
-                const store = useAdminStore(); // 獲取 Pinia store 的實例
+                const store = useAdminStore(); // 獲取 Pinia store
 
                 const response = await fetch(`${import.meta.env.BASE_URL}public/adminmember.json`);
                 const users = await response.json();
@@ -163,6 +163,19 @@ export default {
             } catch (error) {
                 console.error('登入失敗:', error);
                 alert('登入失敗');
+            }
+        },
+        async memsignout() {
+            try {
+                const store = useAdminStore(); // 獲取 Pinia store
+
+                    store.clearCurrentUser(); // 設置當前用戶到 Pinia
+                    alert("已登出");
+                    this.$router.push('/');
+
+            } catch (error) {
+                console.error('發生錯誤:', error);
+                alert('發生錯誤');
             }
         },
     },
