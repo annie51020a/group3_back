@@ -4,12 +4,12 @@
         <div class="admin-content">
             <div class="title-box">
                 <h1>後台人員管理</h1>
-                <p>使用者:123</p>
+                <p>使用者:{{ store.$state.currentAccount }}</p>
                 <button class="sign-out">登出</button>
             </div>
             <button class="add-admin">+新增</button>
 
-            <Table class="admin-table" stripe :columns="columns" :data="data"></Table>
+            <Table class="admin-table" stripe :columns="columns" :data="mem"></Table>
 
 
             <!-- 刪除帳號小視窗 -->
@@ -36,6 +36,8 @@
 import MenuList from '@/components/home/MenuList.vue';
 import AdminInfoBox from '@/components/layout/AdminInfoBox.vue';
 import { resolveComponent } from 'vue';
+import { useAdminStore } from '@/store/adminState.js';
+
 
 export default {
     components: {
@@ -121,36 +123,48 @@ export default {
                     }
                 }
             ],
-            data: [
-                {
-                    id: '1',
-                    adminid: 'DKJ2501',
-                    account: 'admin01',
-                    password: '11111111',
-                    status: '',
-                    permission: '編輯'
-                },
-                {
-                    id: '2',
-                    adminid: 'DKJ2502',
-                    account: 'admin02',
-                    password: '22222222',
-                    status: '刪除',
-                    permission: '查看'
-                },
-                {
-                    id: '3',
-                    adminid: 'DKJ2503',
-                    account: 'admin03',
-                    password: '33333333',
-                    status: '刪除',
-                    permission: '查看'
-                },
-            ]
+            mem: [],
         }
     },
+    setup() {
+        const store = useAdminStore();
+        return {
+            store,
+        }
+    },
+    mounted() {
+        fetch(`${import.meta.env.BASE_URL}public/adminmember.json`)
+            .then(res => res.json())
+            .then(json => {
+                this.mem = json;
+            });
+                console.log();
+    }, 
     methods: {
+        async memLogin() {
+            try {
+                const store = useAdminStore(); // 獲取 Pinia store 的實例
 
+                const response = await fetch(`${import.meta.env.BASE_URL}public/adminmember.json`);
+                const users = await response.json();
+
+                const loggedInUser = users.find(u => u.account === this.textData && u.password === this.pswData);
+                if (loggedInUser) {
+                    store.setCurrentUser(loggedInUser); // 設置當前用戶到 Pinia
+                    alert("登入成功!");
+                    this.textData = '';
+                    this.pswData = '';
+                    this.$router.push('/newsmanage');
+                } else {
+                    alert("帳號或密碼錯誤!");
+                    this.textData = '';
+                    this.pswData = '';
+                }
+            } catch (error) {
+                console.error('登入失敗:', error);
+                alert('登入失敗');
+            }
+        },
     },
 }
 </script>

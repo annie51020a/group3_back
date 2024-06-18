@@ -16,12 +16,49 @@
                 <input class="password" name="memPsw" type="password" placeholder="請輸入密碼" maxlength="12" minlength="6"
                     v-model="pswData" />
             </div>
-            <button>登入</button>
+            <button @click="memLogin()">登入</button>
         </div>
     </section>
 </template>
 
-<script setup></script>
+<script>
+import { useAdminStore } from '@/store/adminState.js'; // 引入 Pinia store
+
+export default {
+    data() {
+        return {
+            textData: '',
+            pswData: '',
+        };
+    },
+    methods: {
+        async memLogin() {
+            try {
+                const store = useAdminStore(); // 獲取 Pinia store 的實例
+
+                const response = await fetch(`${import.meta.env.BASE_URL}public/adminmember.json`);
+                const users = await response.json();
+
+                const loggedInUser = users.find(u => u.account === this.textData && u.password === this.pswData);
+                if (loggedInUser) {
+                    store.setCurrentUser(loggedInUser); // 設置當前用戶到 Pinia
+                    alert("登入成功!");
+                    this.textData = '';
+                    this.pswData = '';
+                    this.$router.push('/newsmanage');
+                } else {
+                    alert("帳號或密碼錯誤!");
+                    this.textData = '';
+                    this.pswData = '';
+                }
+            } catch (error) {
+                console.error('登入失敗:', error);
+                alert('登入失敗');
+            }
+        },
+    },
+};
+</script>
 
 <style lang="scss">
 .login-page {
