@@ -127,7 +127,7 @@ export default {
         }
     },
     mounted() {
-        fetch(`${import.meta.env.BASE_URL}public/adminmember.json`)
+        fetch(`${import.meta.env.BASE_URL}adminmember.json`)
             .then(res => res.json())
             .then(json => {
                 this.mem = json;
