@@ -36,7 +36,7 @@ export default {
             try {
                 const store = useAdminStore(); // 獲取 Pinia store 的實例
 
-                const response = await fetch(`${import.meta.env.BASE_URL}public/adminmember.json`);
+                const response = await fetch(`${import.meta.env.BASE_URL}adminmember.json`);
                 const users = await response.json();
 
                 const loggedInUser = users.find(u => u.account === this.textData && u.password === this.pswData);

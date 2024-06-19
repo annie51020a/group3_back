@@ -39,12 +39,12 @@ export default {
                 {
                     title: '商品編號',
                     key: 'prodid',
-                    width: '60px'
+                    width: '80px'
                 },
                 {
                     title: '商品分類',
                     key: 'prodcategory',
-                    width: '60px'
+                    width: '80px'
                 },
                 {
                     title: '商品圖片1',
@@ -60,17 +60,17 @@ export default {
                 {
                     title: '商品價格',
                     key: 'prodprice',
-                    width: '100px',
+                    width: '90px',
                 },
                 {
                     title: '商品描述',
                     key: 'proddesc',
-                    width: '100px',
+                    width: '120px',
                 },
                 {
                     title: '商品編輯',
                     key: 'edit',
-                    width: '120px',
+                    width: '95px',
                     render: (h, params) => {
                         return h('div', [
                             h(resolveComponent('Button'), {
@@ -92,7 +92,7 @@ export default {
                 {
                     title: '商品刪除',
                     key: 'delete',
-                    width: '120px',
+                    width: '95px',
 
                     render: (h, params) => {
 
@@ -112,16 +112,6 @@ export default {
                 }
             ],
             data: [
-                {
-                    prodid: '1',
-                    prodcategory: '圖案',
-                    prodimg1: '商品圖片1',
-                    prodname: '數字精緻手工油紙傘',
-                    prodprice: 'NT$699',
-                    proddesc: '手工繪製數字圖案油紙傘，經典設計，適合收藏與實用。',
-                    edit: '編輯',
-                    delete: '刪除',
-                },
                 {
                     prodid: '1',
                     prodcategory: '圖案',
