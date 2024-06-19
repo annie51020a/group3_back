@@ -4,8 +4,8 @@
         <div class="activity-content">
             <div class="title-box">
                 <h1>活動管理</h1>
-                <p>使用者:123</p>
-                <button class="sign-out">登出</button>
+                <p>使用者:{{ store.$state.currentAccount }}</p>
+                <button class="sign-out" @click="memsignout()">登出</button>
             </div>
 
             <div class="input-box">
@@ -33,6 +33,7 @@
 
 import MenuList from '@/components/home/MenuList.vue';
 import { resolveComponent } from 'vue';
+import { useAdminStore } from '@/store/adminState.js';
 
 
 export default {
@@ -50,7 +51,7 @@ export default {
                 {
                     title: '費用',
                     key: 'actprice',
-                    width: '80px'
+                    width: '100px'
                 },
                 {
                     title: '地點',
@@ -61,12 +62,12 @@ export default {
                 {
                     title: '活動狀態',
                     key: 'actstate',
-                    width: '120px'
+                    width: '100px'
                 },
                 {
                     title: '報名人數',
                     key: 'memnum',
-                    width: '120px',
+                    width: '100px',
                 },
                 {
                     title: '名單',
@@ -114,7 +115,7 @@ export default {
             ],
             data: [
                 {
-                    actname: '傳統油紙傘創意體驗2024.06.01 (六)第一場次 10:00 ~ 12:00',
+                    actname: '傳統油紙傘創意體驗',
                     actprice: 'NT$300 / 人',
                     actloc: '高雄市前鎮區中華五路123號5樓',
                     actstate: '進行中',
@@ -123,7 +124,7 @@ export default {
                     manage: '',
                 },
                 {
-                    actname: '傳統油紙傘創意體驗2024.06.01 (六)第一場次 10:00 ~ 12:00',
+                    actname: '傳統油紙傘創意體驗',
                     actprice: 'NT$300 / 人',
                     actloc: '高雄市前鎮區中華五路123號5樓',
                     actstate: '進行中',
@@ -132,7 +133,7 @@ export default {
                     manage: '',
                 },
                 {
-                    actname: '傳統油紙傘創意體驗2024.06.01 (六)第一場次 10:00 ~ 12:00',
+                    actname: '傳統油紙傘創意體驗',
                     actprice: 'NT$300 / 人',
                     actloc: '高雄市前鎮區中華五路123號5樓',
                     actstate: '進行中',
@@ -143,6 +144,34 @@ export default {
             ]
         }
     },
+    setup() {
+        const store = useAdminStore();
+        return {
+            store,
+        }
+    },
+    mounted() {
+        fetch(`${import.meta.env.BASE_URL}public/adminmember.json`)
+            .then(res => res.json())
+            .then(json => {
+                this.mem = json;
+            });
+    },
+    methods: {
+        async memsignout() {
+            try {
+                const store = useAdminStore(); // 獲取 Pinia store
+
+                store.clearCurrentUser(); // 設置當前用戶到 Pinia
+                alert("已登出");
+                this.$router.push('/');
+
+            } catch (error) {
+                console.error('發生錯誤:', error);
+                alert('發生錯誤');
+            }
+        },
+    }
 }
 </script>
 
@@ -196,7 +225,7 @@ export default {
         }
 
         .activity-table {
-            width: 801px;
+            width: 781px;
             text-align: center;
             margin: 3% auto 0;
             font-family: "Noto Serif HK", serif;
