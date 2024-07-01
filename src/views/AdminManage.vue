@@ -168,7 +168,7 @@ export default {
             try {
                 const store = useAdminStore(); // 獲取 Pinia store
 
-                store.clearCurrentUser(); // 設置當前用戶到 Pinia
+                store.clearCurrentUser(); // 清除當前用戶
                 alert("已登出");
                 this.$router.push('/');
 
