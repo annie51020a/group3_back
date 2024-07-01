@@ -16,7 +16,7 @@
             <div class="delete-box">
                 <p>確認刪除此帳號?<br>刪除後將無法復原</p>
                 <div class="button-box">
-                    <button>取消</button>
+                    <button @click="cancel()">取消</button>
                     <button>確認</button>
                 </div>
             </div>
@@ -25,7 +25,6 @@
             <div class="admin-info-box">
                 <AdminInfoBox />
             </div>
-
 
         </div>
     </section>
@@ -83,10 +82,9 @@ export default {
                                     style: {
                                         marginRight: '5px'
                                     },
-                                    on: {
-                                        click: () => {
-                                            this.show(params.index);// 刪除功能寫在這
-                                        }
+                                    onClick: () => {
+                                        const deleteBox = document.querySelector('.delete-box');
+                                        deleteBox.style.display = "flex";
                                     }
                                 }, '刪除'),
                             ]);
@@ -111,8 +109,9 @@ export default {
                                 style: {
                                     marginRight: '5px'
                                 },
-                                onClick: () => {
-                                    this.show(params.index)//編輯跟查看判斷式寫這
+                                onClick: () => {//編輯跟查看判斷式寫這
+                                    const adminInfoBox = document.querySelector('.admin-info-box');
+                                    adminInfoBox.style.display = "flex";
                                 }
                             }, {
                                 default() {
@@ -177,6 +176,10 @@ export default {
                 alert('發生錯誤');
             }
         },
+        cancel() {
+            const deleteBox = document.querySelector('.delete-box');
+            deleteBox.style.display = "none";
+        },
     },
 }
 </script>
@@ -233,7 +236,7 @@ export default {
         }
 
         .delete-box {
-            display: none; //用click display:flex
+            display: none;
             flex-direction: column;
             justify-content: space-evenly;
             align-items: center;
@@ -269,9 +272,10 @@ export default {
             display: none;
             background-color: #FFF6EA;
             position: absolute;
-            left: 45%;
+            left: 40%;
             top: 20%;
             border-radius: 20px;
+            z-index: 5;
         }
     }
 }
