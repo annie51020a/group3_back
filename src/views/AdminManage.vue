@@ -7,7 +7,7 @@
                 <p>使用者:{{ store.$state.currentAccount }}</p>
                 <button @click="memsignout()" class="sign-out">登出</button>
             </div>
-            <button class="add-admin">+新增</button>
+            <button class="add-admin" @click="viewInfoBox()">+新增</button>
 
             <Table class="admin-table" stripe :columns="columns" :data="mem"></Table>
 
@@ -16,14 +16,20 @@
             <div class="delete-box">
                 <p>確認刪除此帳號?<br>刪除後將無法復原</p>
                 <div class="button-box">
-                    <button @click="cancel()">取消</button>
+                    <button @click="cancelDelete()">取消</button>
                     <button>確認</button>
                 </div>
             </div>
 
             <!-- 新增/編輯/查看帳號 -->
-            <div class="admin-info-box">
-                <AdminInfoBox />
+            <div class="admin-info-box" id="admin-new">
+                <AdminInfoNew />
+            </div>
+            <div class="admin-info-box" id="admin-edit">
+                <AdminInfoEdit />
+            </div>
+            <div class="admin-info-box" id="admin-view">
+                <AdminInfoView />
             </div>
 
         </div>
@@ -33,7 +39,9 @@
 <script>
 
 import MenuList from '@/components/home/MenuList.vue';
-import AdminInfoBox from '@/components/layout/AdminInfoBox.vue';
+import AdminInfoEdit from '@/components/layout/AdminInfoEdit.vue';
+import AdminInfoView from '@/components/layout/AdminInfoView.vue';
+import AdminInfoNew from '@/components/layout/AdminInfoNew.vue';
 import { resolveComponent } from 'vue';
 import { useAdminStore } from '@/store/adminState.js';
 
@@ -41,7 +49,9 @@ import { useAdminStore } from '@/store/adminState.js';
 export default {
     components: {
         MenuList,
-        AdminInfoBox,
+        AdminInfoEdit,
+        AdminInfoView,
+        AdminInfoNew,
     },
     data() {
         return {
@@ -110,12 +120,18 @@ export default {
                                     marginRight: '5px'
                                 },
                                 onClick: () => {//編輯跟查看判斷式寫這
-                                    const adminInfoBox = document.querySelector('.admin-info-box');
-                                    adminInfoBox.style.display = "flex";
+                                    if(buttonText ==='編輯'){
+                                        const adminInfoBox = document.getElementById('admin-edit');
+                                        adminInfoBox.style.display = "flex";
+                                    }else{
+                                        const adminInfoBox = document.getElementById('admin-view');
+                                        adminInfoBox.style.display = "flex";
+                                    }
+
                                 }
                             }, {
                                 default() {
-                                    return buttonText
+                                    return buttonText;
                                 }
                             }),
                         ]);
@@ -128,7 +144,7 @@ export default {
     setup() {
         const store = useAdminStore();
         return {
-            store,
+            store
         }
     },
     mounted() {
@@ -176,10 +192,14 @@ export default {
                 alert('發生錯誤');
             }
         },
-        cancel() {
+        cancelDelete() {
             const deleteBox = document.querySelector('.delete-box');
             deleteBox.style.display = "none";
         },
+        viewInfoBox(){
+            const viewInfoBox = document.getElementById('admin-new');
+            viewInfoBox.style.display = "flex";
+        }
     },
 }
 </script>
@@ -215,6 +235,8 @@ export default {
                 background-color: white;
                 border: 1px solid #B1241A;
                 color: #B1241A;
+                cursor:pointer;
+
             }
         }
 
@@ -225,6 +247,7 @@ export default {
             background-color: white;
             border: 1px solid black;
             margin: 3% 0 3% 10%;
+            cursor: pointer;
         }
 
         .admin-table {

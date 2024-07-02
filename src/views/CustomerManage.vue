@@ -9,7 +9,7 @@
             </div>
 
             <div class="input-box">
-                <button class="add-activity">+新增</button>
+                <button class="add-answer">+新增</button>
                 <Space direction="vertical" size="large"><!-- 搜尋活動 -->
                     <Space>
                         <Input prefix="ios-search" placeholder="輸入關鍵字" style="width: 200px" />
@@ -182,6 +182,8 @@ export default {
                 background-color: white;
                 border: 1px solid #B1241A;
                 color: #B1241A;
+                cursor:pointer;
+
             }
         }
 
@@ -192,12 +194,13 @@ export default {
             align-items: center;
             gap: 35%;
 
-            .add-activity {
+            .add-answer {
                 width: 125px;
                 height: 50px;
                 border-radius: 20px;
                 background-color: white;
                 border: 1px solid black;
+                cursor: pointer;
             }
         }
 

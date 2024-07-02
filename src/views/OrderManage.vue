@@ -359,6 +359,7 @@ export default {
                 background-color: white;
                 border: 1px solid #B1241A;
                 color: #B1241A;
+                cursor:pointer;
             }
         }
 

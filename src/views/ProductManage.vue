@@ -187,6 +187,8 @@ export default {
                 background-color: white;
                 border: 1px solid #B1241A;
                 color: #B1241A;
+                cursor:pointer;
+
             }
         }
 
@@ -203,6 +205,7 @@ export default {
                 border-radius: 20px;
                 background-color: white;
                 border: 1px solid black;
+                cursor: pointer;
             }
         }
 

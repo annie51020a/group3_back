@@ -19,11 +19,21 @@
                     <DatePicker type="date" placeholder="請選擇日期" style="width: 200px" />
                 </Space>
 
-                <button class="add-activity">+新增</button>
+                <button class="add-activity" @click="viewInfoBoxActivity()">+新增</button>
             </div>
 
             <Table class="activity-table" stripe :columns="columns" :data="data"></Table><!-- 表格 -->
         </div>
+
+        <!-- 新增/編輯活動 -->
+        <div class="activity-info-box" id="activity-edit">
+            <ActivityInfoEdit />
+        </div>
+
+        <div class="activity-info-box" id="activity-new">
+            <ActivityInfoNew />
+        </div>
+
     </section>
 
 
@@ -32,6 +42,9 @@
 <script>
 
 import MenuList from '@/components/home/MenuList.vue';
+import ActivityInfoEdit from '@/components/layout/ActivityInfoEdit.vue';
+import ActivityInfoNew from '@/components/layout/ActivityInfoNew.vue';
+
 import { resolveComponent } from 'vue';
 import { useAdminStore } from '@/store/adminState.js';
 
@@ -39,6 +52,8 @@ import { useAdminStore } from '@/store/adminState.js';
 export default {
     components: {
         MenuList,
+        ActivityInfoEdit,
+        ActivityInfoNew,
     },
     data() {
         return {
@@ -96,7 +111,7 @@ export default {
                     key: 'manage',
                     width: '120px',
 
-                    render: (h, params) => {
+                    render: (h) => {
 
                         return h('div', [
                             h(resolveComponent('Button'), {
@@ -106,7 +121,8 @@ export default {
                                     marginRight: '5px'
                                 },
                                 onClick: () => {
-                                    this.show(params.index)//編輯功能寫這
+                                    const viewInfoBoxActivity = document.getElementById('activity-edit');
+                                    viewInfoBoxActivity.style.display = "flex";
                                 }
                             }, '編輯'),
                         ]);
@@ -171,6 +187,10 @@ export default {
                 alert('發生錯誤');
             }
         },
+        viewInfoBoxActivity(){
+            const viewInfoBox = document.getElementById('activity-new');
+            viewInfoBox.style.display = "flex";
+        }
     }
 }
 </script>
@@ -206,6 +226,8 @@ export default {
                 background-color: white;
                 border: 1px solid #B1241A;
                 color: #B1241A;
+                cursor: pointer;
+
             }
         }
 
@@ -221,6 +243,7 @@ export default {
                 border-radius: 20px;
                 background-color: white;
                 border: 1px solid black;
+                cursor: pointer;
             }
         }
 
@@ -232,5 +255,14 @@ export default {
         }
     }
 
+    .activity-info-box {
+        display: none;
+        background-color: #FFF6EA;
+        position: absolute;
+        left: 40%;
+        top: 20%;
+        border-radius: 20px;
+        z-index: 5;
+    }
 }
 </style>
