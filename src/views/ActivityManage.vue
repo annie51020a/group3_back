@@ -34,6 +34,10 @@
             <ActivityInfoNew />
         </div>
 
+        <div class="activity-info-box" id="activity-member-list">
+            <ActivityMemberList />
+        </div>
+
     </section>
 
 
@@ -44,6 +48,7 @@
 import MenuList from '@/components/home/MenuList.vue';
 import ActivityInfoEdit from '@/components/layout/ActivityInfoEdit.vue';
 import ActivityInfoNew from '@/components/layout/ActivityInfoNew.vue';
+import ActivityMemberList from '@/components/layout/ActivityMemberList.vue';
 
 import { resolveComponent } from 'vue';
 import { useAdminStore } from '@/store/adminState.js';
@@ -54,6 +59,7 @@ export default {
         MenuList,
         ActivityInfoEdit,
         ActivityInfoNew,
+        ActivityMemberList,
     },
     data() {
         return {
@@ -88,7 +94,7 @@ export default {
                     title: '名單',
                     key: 'memlist',
                     width: '120px',
-                    render: (h, params) => {
+                    render: (h) => {
                         return h('div', [
                             h(resolveComponent('Button'), {
                                 type: 'default',
@@ -96,11 +102,10 @@ export default {
                                 style: {
                                     marginRight: '5px'
                                 },
-                                on: {
-                                    click: () => {
-                                        this.show(params.index);// 查看功能寫在這
+                                onClick: () => {
+                                        const activityMemberList = document.getElementById('activity-member-list');
+                                        activityMemberList.style.display = "flex";
                                     }
-                                }
                             }, '查看'),
                         ]);
 
@@ -260,9 +265,12 @@ export default {
         background-color: #FFF6EA;
         position: absolute;
         left: 40%;
-        top: 20%;
+        top: 0%;
         border-radius: 20px;
         z-index: 5;
+    }
+    #activity-member-list{
+        top: 20%;
     }
 }
 </style>

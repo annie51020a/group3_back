@@ -252,6 +252,7 @@ export default {
 
         .admin-table {
             width: 681px;
+            height: 200px;
             text-align: center;
             margin: 0 auto;
             font-size: 24px;
