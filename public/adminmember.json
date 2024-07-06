@@ -1,26 +1,23 @@
 [
     {
-        "id": "1",
-        "adminid": "DKJ2501",
-        "account": "admin01",
-        "password": "admin01",
-        "status": "",
-        "permission": "編輯"
+        "empId": "1",
+        "empAccount": "admin01",
+        "empPassword": "admin01",
+        "empStatus": "1",
+        "empAuthority": "編輯"
     },
     {
-        "id": "2",
-        "adminid": "DKJ2502",
-        "account": "admin02",
-        "password": "admin02",
-        "status": "刪除",
-        "permission": "查看"
+        "empId": "2",
+        "empAccount": "admin02",
+        "empPassword": "admin02",
+        "empStatus": "0",
+        "empAuthority": "查看"
     },
     {
-        "id": "3",
-        "adminid": "DKJ2503",
-        "account": "admin03",
-        "password": "admin03",
-        "status": "刪除",
-        "permission": "查看"
+        "empId": "3",
+        "empAccount": "admin03",
+        "empPassword": "admin03",
+        "empStatus": "0",
+        "empAuthority": "查看"
     }
 ]

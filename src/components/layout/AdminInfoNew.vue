@@ -1,19 +1,16 @@
 <template>
     <Form class="admin-info-form" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100">
         <h3 class="admin-info-title">新增後台帳號</h3>
-        <FormItem label="編號" prop="id">
+        <FormItem label="編號" prop="emp-id">
             <Input style="width: 400px;" v-model="formValidate.id" disabled></Input>
         </FormItem>
-        <FormItem label="員工ID" prop="adminid">
-            <Input style="width: 400px;" v-model="formValidate.adminid" ></Input>
-        </FormItem>
-        <FormItem label="員工名稱" prop="name">
+        <FormItem label="員工名稱" prop="emp-name">
             <Input style="width: 400px;" v-model="formValidate.name" ></Input>
         </FormItem>
-        <FormItem label="帳號名稱" prop="account">
+        <FormItem label="帳號名稱" prop="emp-account">
             <Input style="width: 400px;" v-model="formValidate.account"></Input>
         </FormItem>
-        <FormItem label="密碼" prop="password">
+        <FormItem label="密碼" prop="emp-password">
             <Input style="width: 400px;" v-model="formValidate.password"></Input>
         </FormItem>
 
@@ -29,11 +26,10 @@ export default {
     data() {
         return {
             formValidate: {
-                id: '',
-                adminid: '',
-                account: '',
-                name: '',
-                password: '',
+                emp_id: '',
+                emp_account: '',
+                emp_name: '',
+                emp_password: '',
             },
             ruleValidate: {
                 // id: [
@@ -42,13 +38,13 @@ export default {
                 // adminid: [
                 //     { required: true, message: '員工名稱不能為空', trigger: 'blur' }
                 // ],
-                account: [
+                emp_account: [
                     { required: true, message: '帳號不能為空', trigger: 'blur' }
                 ],
                 // name: [
                 //     { required: true, message: '員工名稱不能為空', trigger: 'blur' }
                 // ],
-                password: [
+                emp_password: [
                     { required: true, message: '密碼不能為空', trigger: 'blur' },
                 ],
             },

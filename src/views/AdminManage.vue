@@ -9,7 +9,7 @@
             </div>
             <button class="add-admin" @click="viewInfoBox()">+新增</button>
 
-            <Table class="admin-table" stripe :columns="columns" :data="mem"></Table>
+            <Table class="admin-table" stripe :columns="columns" :data="displayData"></Table>
 
 
             <!-- 刪除帳號小視窗 -->
@@ -58,33 +58,28 @@ export default {
             columns: [
                 {
                     title: '編號',
-                    key: 'id',
-                    width: '80px'
-                },
-                {
-                    title: '員工ID',
-                    key: 'adminid',
-                    width: '120px'
+                    key: 'emp_id',
+                    width: '136px'
                 },
                 {
                     title: '帳號名稱',
-                    key: 'account',
-                    width: '120px'
+                    key: 'emp_account',
+                    width: '136px'
 
                 },
                 {
                     title: '密碼',
-                    key: 'password',
-                    width: '120px'
+                    key: 'emp_password',
+                    width: '136px'
                 },
                 {
                     title: '狀態',
-                    key: 'status',
-                    width: '120px',
+                    key: 'emp_status',
+                    width: '136px',
 
                     render: (h, params) => {
 
-                        if (params.row.status == '刪除') {
+                        if (params.row.emp_status == '0') {
                             return h('div', [
                                 h(resolveComponent('Button'), {
                                     type: 'default',
@@ -106,11 +101,12 @@ export default {
                 },
                 {
                     title: '權限',
-                    key: 'permission',
-                    width: '120px',
+                    key: 'emp_authority',
+                    width: '136px',
 
                     render: (h, params) => {
-                        let buttonText = params.row.permission === '編輯' ? '編輯' : '查看';
+                        let authority = params.row.emp_authority === '1' ? '1' : '0';
+                        let buttonText = '查看';
 
                         return h('div', [
                             h(resolveComponent('Button'), {
@@ -120,9 +116,10 @@ export default {
                                     marginRight: '5px'
                                 },
                                 onClick: () => {//編輯跟查看判斷式寫這
-                                    if(buttonText ==='編輯'){
+                                    if(authority ==='1'){
                                         const adminInfoBox = document.getElementById('admin-edit');
                                         adminInfoBox.style.display = "flex";
+                                        buttonText = '編輯';
                                     }else{
                                         const adminInfoBox = document.getElementById('admin-view');
                                         adminInfoBox.style.display = "flex";
@@ -131,14 +128,19 @@ export default {
                                 }
                             }, {
                                 default() {
-                                    return buttonText;
+                                    if(authority ==='1'){
+                                        buttonText = '編輯';
+                                        return buttonText;
+                                    }else{
+                                        return buttonText;
+                                    }
                                 }
                             }),
                         ]);
                     }
                 }
             ],
-            mem: [],
+            displayData: [],
         }
     },
     setup() {
@@ -148,11 +150,37 @@ export default {
         }
     },
     mounted() {
-        fetch(`${import.meta.env.BASE_URL}adminmember.json`)
-            .then(res => res.json())
+        // fetch(`${import.meta.env.BASE_URL}adminmember.json`)
+        //     .then(res => res.json())
+        //     .then(json => {
+        //         this.mem = json;
+        //     });
+        const body = {
+            // 确保 body 定义并包含正确的数据
+        };
+
+        fetch(`http://localhost/g3_php/admin_getData.php`, {
+            method: "POST",
+            body: JSON.stringify(body)
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok ' + res.statusText);
+                }
+                return res.json();
+            })
             .then(json => {
-                this.mem = json;
+                // 確認有沒有response
+                console.log(json);
+                // 備份還原用
+                this.responseData = json["data"]["list"];
+                // 顯示用
+                this.displayData = json["data"]["list"];
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
             });
+
     },
     methods: {
         async memLogin() {
@@ -252,7 +280,7 @@ export default {
 
         .admin-table {
             width: 681px;
-            height: 200px;
+            // height: 200px;
             text-align: center;
             margin: 0 auto;
             font-size: 24px;

@@ -1,19 +1,16 @@
 <template>
     <Form class="admin-info-form" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100">
         <h3 class="admin-info-title">查看後台帳號</h3>
-        <FormItem label="編號" prop="id">
+        <FormItem label="編號" prop="emp_id">
             <Input style="width: 400px;" v-model="formValidate.id" disabled></Input>
         </FormItem>
-        <FormItem label="員工ID" prop="adminid">
-            <Input style="width: 400px;" v-model="formValidate.adminid" disabled></Input>
-        </FormItem>
-        <FormItem label="員工名稱" prop="name">
+        <FormItem label="員工名稱" prop="emp_name">
             <Input style="width: 400px;" v-model="formValidate.name" disabled></Input>
         </FormItem>
-        <FormItem label="帳號名稱" prop="account">
+        <FormItem label="帳號名稱" prop="emp_account">
             <Input style="width: 400px;" v-model="formValidate.account" disabled></Input>
         </FormItem>
-        <FormItem label="密碼" prop="password">
+        <FormItem label="密碼" prop="emp_password">
             <Input style="width: 400px;" v-model="formValidate.password" disabled></Input>
         </FormItem>
 
@@ -28,11 +25,10 @@ export default {
     data() {
         return {
             formValidate: {
-                id: '',
-                adminid: '',
-                account: '',
-                name: '',
-                password: '',
+                emp_id: '',
+                emp_account: '',
+                emp_name: '',
+                emp_password: '',
             },
             ruleValidate: {
                 // id: [
