@@ -30,27 +30,28 @@ export default {
                 emp_name: '',
                 emp_password: '',
             },
-            ruleValidate: {
-                // id: [
-                //     { required: true, message: '員工名稱不能為空', trigger: 'blur' }
-                // ],
-                // adminid: [
-                //     { required: true, message: '員工名稱不能為空', trigger: 'blur' }
-                // ],
-                // account: [
-                //     { required: true, message: '帳號不能為空', trigger: 'blur' }
-                // ],
-                // name: [
-                //     { required: true, message: '員工名稱不能為空', trigger: 'blur' }
-                // ],
-                // password: [
-                //     { required: true, message: '密碼不能為空', trigger: 'blur' },
-                // ],
-            },
-            title:''
+            title:'',
+            empId:'',
         }
     },
+
     methods: {
+        fetchMemberInfo() {
+            const empId = this.formValidate.emp_id;
+            fetch(`http://localhost/g3_php/adminInfoView.php?emp_id=${empId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    this.formValidate = data;
+                })
+                .catch(error => {
+                    console.error('Error fetching member info', error);
+                });
+        },
         handleSubmit(name) {
             this.$refs[name].validate((valid) => {
                 if (valid) {
@@ -64,7 +65,10 @@ export default {
             const adminInfoBox = document.getElementById('admin-view');
             adminInfoBox.style.display = 'none';
         },
-    }
+    },
+    mounted() {
+        this.fetchMemberInfo(this.empId);
+    },
 }
 </script>
 

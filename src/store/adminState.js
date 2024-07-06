@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
 export const useAdminStore = defineStore('admin', {
     state: () => ({
@@ -7,26 +7,26 @@ export const useAdminStore = defineStore('admin', {
     }),
     actions: {
         setCurrentUser(user) {
-            this.currentUser = user;
+            this.currentUser = user
             if (user) {
-                this.currentAccount = user.account; // 提取並儲存用戶帳號
-                localStorage.setItem('currentUser', JSON.stringify(user));
+                this.currentAccount = user.emp_account // 提取並儲存用戶帳號
+                localStorage.setItem('currentUser', JSON.stringify(user))
             } else {
-                this.currentAccount = null; // 清空帳號資料
+                this.currentAccount = null // 清空帳號資料
             }
         },
         clearCurrentUser() {
-            this.currentUser = null;
-            this.currentAccount = null; // 清空帳號資料
-            localStorage.removeItem('currentUser'); 
+            this.currentUser = null
+            this.currentAccount = null // 清空帳號資料
+            localStorage.removeItem('currentUser')
         },
         loadCurrentUser() {
-            const user = localStorage.getItem('currentUser');
+            const user = localStorage.getItem('currentUser')
             if (user) {
-                const parsedUser = JSON.parse(user);
-                this.currentUser = parsedUser;
-                this.currentAccount = parsedUser.account;
+                const parsedUser = JSON.parse(user)
+                this.currentUser = parsedUser
+                this.currentAccount = parsedUser.emp_account // 提取並儲存用戶帳號
             }
         }
     }
-});
+})

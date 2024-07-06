@@ -116,11 +116,11 @@ export default {
                                     marginRight: '5px'
                                 },
                                 onClick: () => {//編輯跟查看判斷式寫這
-                                    if(authority ==='1'){
+                                    if (authority === '1') {
                                         const adminInfoBox = document.getElementById('admin-edit');
                                         adminInfoBox.style.display = "flex";
                                         buttonText = '編輯';
-                                    }else{
+                                    } else {
                                         const adminInfoBox = document.getElementById('admin-view');
                                         adminInfoBox.style.display = "flex";
                                     }
@@ -128,10 +128,10 @@ export default {
                                 }
                             }, {
                                 default() {
-                                    if(authority ==='1'){
+                                    if (authority === '1') {
                                         buttonText = '編輯';
                                         return buttonText;
-                                    }else{
+                                    } else {
                                         return buttonText;
                                     }
                                 }
@@ -187,10 +187,27 @@ export default {
             try {
                 const store = useAdminStore(); // 獲取 Pinia store
 
-                const response = await fetch(`${import.meta.env.BASE_URL}public/adminmember.json`);
+                // 構建 body
+                const body = {
+                    account: this.textData,
+                    password: this.pswData
+                };
+
+                const response = await fetch(`http://localhost/g3_php/loginData.php`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+
                 const users = await response.json();
 
-                const loggedInUser = users.find(u => u.account === this.textData && u.password === this.pswData);
+                const loggedInUser = users.find(u => u.emp_account === this.textData && u.emp_password === this.pswData);
                 if (loggedInUser) {
                     store.setCurrentUser(loggedInUser); // 設置當前用戶到 Pinia
                     alert("登入成功!");
@@ -224,10 +241,10 @@ export default {
             const deleteBox = document.querySelector('.delete-box');
             deleteBox.style.display = "none";
         },
-        viewInfoBox(){
+        viewInfoBox() {
             const viewInfoBox = document.getElementById('admin-new');
             viewInfoBox.style.display = "flex";
-        }
+        },
     },
 }
 </script>
@@ -263,7 +280,7 @@ export default {
                 background-color: white;
                 border: 1px solid #B1241A;
                 color: #B1241A;
-                cursor:pointer;
+                cursor: pointer;
 
             }
         }

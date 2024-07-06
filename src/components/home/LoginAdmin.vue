@@ -36,18 +36,35 @@ export default {
             try {
                 const store = useAdminStore(); // 獲取 Pinia store 的實例
 
-                const response = await fetch(`${import.meta.env.BASE_URL}adminmember.json`);
-                const users = await response.json();
+                // 構建 body
+                const body = {
+                    account: this.textData,
+                    password: this.pswData
+                };
 
-                const loggedInUser = users.find(u => u.account === this.textData && u.password === this.pswData);
-                if (loggedInUser) {
+                const response = await fetch(`http://localhost/g3_php/loginData.php`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    const loggedInUser = result.data.user;
                     store.setCurrentUser(loggedInUser); // 設置當前用戶到 Pinia
                     alert("登入成功!");
                     this.textData = '';
                     this.pswData = '';
                     this.$router.push('/newsmanage');
                 } else {
-                    alert("帳號或密碼錯誤!");
+                    alert(result.msg);
                     this.textData = '';
                     this.pswData = '';
                 }
@@ -55,8 +72,8 @@ export default {
                 console.error('登入失敗:', error);
                 alert('登入失敗');
             }
-        },
-    },
+        }
+    }
 };
 </script>
 
