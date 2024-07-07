@@ -11,7 +11,6 @@
 
             <Table class="admin-table" stripe :columns="columns" :data="displayData"></Table>
 
-
             <!-- 刪除帳號小視窗 -->
             <div class="delete-box">
                 <p>確認刪除此帳號?<br>刪除後將無法復原</p>
@@ -29,22 +28,19 @@
                 <AdminInfoEdit />
             </div>
             <div class="admin-info-box" id="admin-view">
-                <AdminInfoView />
+                <AdminInfoView :emp_id="selectedEmpId" />
             </div>
-
         </div>
     </section>
 </template>
 
 <script>
-
 import MenuList from '@/components/home/MenuList.vue';
 import AdminInfoEdit from '@/components/layout/AdminInfoEdit.vue';
 import AdminInfoView from '@/components/layout/AdminInfoView.vue';
 import AdminInfoNew from '@/components/layout/AdminInfoNew.vue';
 import { resolveComponent } from 'vue';
 import { useAdminStore } from '@/store/adminState.js';
-
 
 export default {
     components: {
@@ -65,7 +61,6 @@ export default {
                     title: '帳號名稱',
                     key: 'emp_account',
                     width: '136px'
-
                 },
                 {
                     title: '密碼',
@@ -76,9 +71,7 @@ export default {
                     title: '狀態',
                     key: 'emp_status',
                     width: '136px',
-
                     render: (h, params) => {
-
                         if (params.row.emp_status == '0') {
                             return h('div', [
                                 h(resolveComponent('Button'), {
@@ -93,21 +86,18 @@ export default {
                                     }
                                 }, '刪除'),
                             ]);
-                        }
-                        else {
+                        } else {
                             return null;//如果不是刪除的話就回傳null
-                        };
+                        }
                     }
                 },
                 {
                     title: '權限',
                     key: 'emp_authority',
                     width: '136px',
-
                     render: (h, params) => {
                         let authority = params.row.emp_authority === '1' ? '1' : '0';
                         let buttonText = '查看';
-
                         return h('div', [
                             h(resolveComponent('Button'), {
                                 type: 'default',
@@ -121,10 +111,10 @@ export default {
                                         adminInfoBox.style.display = "flex";
                                         buttonText = '編輯';
                                     } else {
+                                        this.selectedEmpId = params.row.emp_id;
                                         const adminInfoBox = document.getElementById('admin-view');
                                         adminInfoBox.style.display = "flex";
                                     }
-
                                 }
                             }, {
                                 default() {
@@ -141,6 +131,7 @@ export default {
                 }
             ],
             displayData: [],
+            selectedEmpId: null, // 新增的變量，用來存儲選中的員工 ID
         }
     },
     setup() {
@@ -150,15 +141,7 @@ export default {
         }
     },
     mounted() {
-        // fetch(`${import.meta.env.BASE_URL}adminmember.json`)
-        //     .then(res => res.json())
-        //     .then(json => {
-        //         this.mem = json;
-        //     });
-        const body = {
-            // 确保 body 定义并包含正确的数据
-        };
-
+        const body = {};
         fetch(`http://localhost/g3_php/admin_getData.php`, {
             method: "POST",
             body: JSON.stringify(body)
@@ -281,7 +264,6 @@ export default {
                 border: 1px solid #B1241A;
                 color: #B1241A;
                 cursor: pointer;
-
             }
         }
 

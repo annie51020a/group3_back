@@ -2,26 +2,32 @@
     <Form class="admin-info-form" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100">
         <h3 class="admin-info-title">查看後台帳號</h3>
         <FormItem label="編號" prop="emp_id">
-            <Input style="width: 400px;" v-model="formValidate.id" disabled></Input>
+            <Input style="width: 400px;" v-model="formValidate.emp_id" disabled></Input>
         </FormItem>
         <FormItem label="員工名稱" prop="emp_name">
-            <Input style="width: 400px;" v-model="formValidate.name" disabled></Input>
+            <Input style="width: 400px;" v-model="formValidate.emp_name" disabled></Input>
         </FormItem>
         <FormItem label="帳號名稱" prop="emp_account">
-            <Input style="width: 400px;" v-model="formValidate.account" disabled></Input>
+            <Input style="width: 400px;" v-model="formValidate.emp_account" disabled></Input>
         </FormItem>
         <FormItem label="密碼" prop="emp_password">
-            <Input style="width: 400px;" v-model="formValidate.password" disabled></Input>
+            <Input style="width: 400px;" v-model="formValidate.emp_password" disabled></Input>
         </FormItem>
-
 
         <FormItem>
             <Button @click="cancel()" style="margin-left: 8px">確定</Button>
         </FormItem>
     </Form>
 </template>
+
 <script>
 export default {
+    props: {
+        emp_id: {
+            type: String,
+            required: true
+        }
+    },
     data() {
         return {
             formValidate: {
@@ -30,14 +36,11 @@ export default {
                 emp_name: '',
                 emp_password: '',
             },
-            title:'',
-            empId:'',
+            title: '',
         }
     },
-
     methods: {
-        fetchMemberInfo() {
-            const empId = this.formValidate.emp_id;
+        fetchMemberInfo(empId) {
             fetch(`http://localhost/g3_php/adminInfoView.php?emp_id=${empId}`)
                 .then(response => {
                     if (!response.ok) {
@@ -66,9 +69,20 @@ export default {
             adminInfoBox.style.display = 'none';
         },
     },
-    mounted() {
-        this.fetchMemberInfo(this.empId);
+    watch: {
+        // 监听 emp_id 的变化，更新员工信息
+        emp_id(newVal) {
+            if (newVal) {
+                this.fetchMemberInfo(newVal);
+            }
+        }
     },
+    mounted() {
+        // 组件挂载时加载数据
+        if (this.emp_id) {
+            this.fetchMemberInfo(this.emp_id);
+        }
+    }    
 }
 </script>
 
@@ -80,7 +94,8 @@ export default {
     align-items: center;
     width: 600px;
     height: 470px;
-    > h3{
+
+    >h3 {
         margin-bottom: 30px;
     }
 }
