@@ -22,13 +22,13 @@
 
             <!-- 新增/編輯/查看帳號 -->
             <div class="admin-info-box" id="admin-new">
-                <AdminInfoNew />
+                <AdminInfoNew :emp_id="latestEmpId" :fetchData="shouldFetchData" @fetch-complete="onFetchComplete" />
             </div>
             <div class="admin-info-box" id="admin-edit">
-                <AdminInfoEdit />
+                <AdminInfoEdit :emp_id="selectedEmpId" :fetchData="shouldFetchData" @fetch-complete="onFetchComplete" />
             </div>
             <div class="admin-info-box" id="admin-view">
-                <AdminInfoView :emp_id="selectedEmpId" />
+                <AdminInfoView :emp_id="selectedEmpId" :fetchData="shouldFetchData" @fetch-complete="onFetchComplete" />
             </div>
         </div>
     </section>
@@ -107,13 +107,18 @@ export default {
                                 },
                                 onClick: () => {//編輯跟查看判斷式寫這
                                     if (authority === '1') {
+                                        this.selectedEmpId = params.row.emp_id;
                                         const adminInfoBox = document.getElementById('admin-edit');
                                         adminInfoBox.style.display = "flex";
                                         buttonText = '編輯';
+                                        this.shouldFetchData = true;
+                                        console.log(this.selectedEmpId);
                                     } else {
                                         this.selectedEmpId = params.row.emp_id;
                                         const adminInfoBox = document.getElementById('admin-view');
                                         adminInfoBox.style.display = "flex";
+                                        this.shouldFetchData = true;
+                                        console.log(this.selectedEmpId);
                                     }
                                 }
                             }, {
@@ -132,6 +137,7 @@ export default {
             ],
             displayData: [],
             selectedEmpId: null, // 新增的變量，用來存儲選中的員工 ID
+            latestEmpId: '',
         }
     },
     setup() {
@@ -224,9 +230,31 @@ export default {
             const deleteBox = document.querySelector('.delete-box');
             deleteBox.style.display = "none";
         },
-        viewInfoBox() {
-            const viewInfoBox = document.getElementById('admin-new');
-            viewInfoBox.style.display = "flex";
+        async viewInfoBox() {
+            try {
+                // 发起获取最新员工 ID 的请求
+                const response = await fetch('http://localhost/g3_php/getLatestID.php');
+                const data = await response.json();
+
+                if (data.code === 200 && data.data && data.data.latest_id) {
+                    const latestEmpId = data.data.latest_id + 1; // 获取最新 ID 并加一
+                    this.latestEmpId = latestEmpId; // 将最新 ID 设置到当前组件的 latestEmpId
+
+                    // 显示新增帐号信息框
+                    this.showAdminNew = true;
+                    this.shouldFetchData = true; // 标记需要重新获取数据
+                    const adminInfoBox = document.getElementById('admin-new');
+                    adminInfoBox.style.display = "flex";
+                } else {
+                    console.error('Failed to fetch latest ID or no data found:', data.msg);
+                }
+            } catch (error) {
+                console.error('Error in viewInfoBox:', error);
+            }
+        },
+
+        onFetchComplete() {
+            this.shouldFetchData = false;
         },
     },
 }

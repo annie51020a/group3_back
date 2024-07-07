@@ -26,6 +26,10 @@ export default {
         emp_id: {
             type: String,
             required: true
+        },
+        fetchData: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -40,8 +44,9 @@ export default {
         }
     },
     methods: {
-        fetchMemberInfo(empId) {
-            fetch(`http://localhost/g3_php/adminInfoView.php?emp_id=${empId}`)
+        fetchMemberInfo() {
+            console.log("Fetching data for emp_id:", this.emp_id);
+            fetch(`http://localhost/g3_php/adminInfoView.php?emp_id=${this.emp_id}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -49,40 +54,88 @@ export default {
                     return response.json();
                 })
                 .then(data => {
-                    this.formValidate = data;
+                    console.log("Received data:", data);
+                    if (data.code === 200 && data.data) {
+                        this.formValidate = {
+                            emp_id: data.data.emp_id || '',
+                            emp_account: data.data.emp_account || '',
+                            emp_name: data.data.emp_name || '',
+                            emp_password: data.data.emp_password || '',
+                        };
+                    } else {
+                        console.error("Error in data:", data.msg);
+                    }
                 })
                 .catch(error => {
-                    console.error('Error fetching member info', error);
+                    console.error('Error fetching member info:', error);
+                })
+                .finally(() => {
+                    this.$emit('fetch-complete');
                 });
         },
         handleSubmit(name) {
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    this.$Message.success('Success!');
+                    fetch('http://localhost/g3_php/adminInfoEdit.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(this.formValidate)
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.code === 200) {
+                                this.$Message.success('保存成功!');
+                            } else if (data.code === 409) {
+                                this.$Message.error('保存失敗: 帳號已存在');
+                            } else {
+                                this.$Message.error('保存失敗: ' + data.msg);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error updating member info:', error);
+                            this.$Message.error('保存失敗!');
+                        });
                 } else {
-                    this.$Message.error('Fail!');
+                    this.$Message.error('保存失敗!');
                 }
-            })
+            });
         },
         cancel() {
+            // 清除所有資料
+            this.formValidate = {
+                emp_id: '',
+                emp_account: '',
+                emp_name: '',
+                emp_password: '',
+            };
+
+            // 隱藏視窗
             const adminInfoBox = document.getElementById('admin-view');
             adminInfoBox.style.display = 'none';
         },
     },
     watch: {
-        // 监听 emp_id 的变化，更新员工信息
-        emp_id(newVal) {
-            if (newVal) {
-                this.fetchMemberInfo(newVal);
+        emp_id: {
+            immediate: true,
+            handler(newVal) {
+                if (newVal) {
+                    this.fetchMemberInfo();
+                }
             }
         }
     },
     mounted() {
-        // 组件挂载时加载数据
         if (this.emp_id) {
-            this.fetchMemberInfo(this.emp_id);
+            this.fetchMemberInfo();
         }
-    }    
+    }
 }
 </script>
 
