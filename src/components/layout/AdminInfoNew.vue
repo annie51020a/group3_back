@@ -22,6 +22,9 @@
     </Form>
 </template>
 <script>
+import {path} from "../../../path.js";
+
+
 export default {
     props: {
         emp_id: {
@@ -64,7 +67,9 @@ export default {
     methods: {
         fetchMemberInfo() {
             console.log("Fetching data for emp_id:", this.emp_id);
-            fetch(`http://localhost/g3_php/adminInfoView.php?emp_id=${this.emp_id}`)
+            let url = path + 'adminInfoView.php';
+
+            fetch(url + `?emp_id=${this.emp_id}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -94,7 +99,9 @@ export default {
         handleSubmit(name) {
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    fetch('http://localhost/g3_php/adminInfoNew.php', {
+                    let url = path + 'adminInfoNew.php';
+
+                    fetch(url, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'

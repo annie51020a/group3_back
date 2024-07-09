@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import {path} from "../../../path.js";
 import MenuList from '@/components/home/MenuList.vue';
 import AdminInfoEdit from '@/components/layout/AdminInfoEdit.vue';
 import AdminInfoView from '@/components/layout/AdminInfoView.vue';
@@ -148,7 +149,9 @@ export default {
     },
     mounted() {
         const body = {};
-        fetch(`http://localhost/g3_php/admin_getData.php`, {
+        let url = path + 'admin_getData.php';
+
+        fetch(url, {
             method: "POST",
             body: JSON.stringify(body)
         })
@@ -182,7 +185,9 @@ export default {
                     password: this.pswData
                 };
 
-                const response = await fetch(`http://localhost/g3_php/loginData.php`, {
+                let url = path + 'loginData.php';
+
+                const response = await fetch(url, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -233,7 +238,9 @@ export default {
         async viewInfoBox() {
             try {
                 // 发起获取最新员工 ID 的请求
-                const response = await fetch('http://localhost/g3_php/getLatestID.php');
+                let url = path + 'getLatestID.php';
+                
+                const response = await fetch(url);
                 const data = await response.json();
 
                 if (data.code === 200 && data.data && data.data.latest_id) {
