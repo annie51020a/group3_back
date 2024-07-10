@@ -15,7 +15,7 @@
                 </Space>
             </div>
 
-            <Table class="member-table" stripe :columns="columns" :data="data"></Table><!-- 表格 -->
+            <Table class="member-table" stripe height=350 :columns="columns" :data="displayData"></Table><!-- 表格 -->
         </div>
     </section>
 </template>
@@ -25,6 +25,8 @@
 import MenuList from '@/components/home/MenuList.vue';
 import { resolveComponent } from 'vue';
 import { useAdminStore } from '@/store/adminState.js';
+import { path } from '../../path.js';
+
 
 
 export default {
@@ -36,28 +38,28 @@ export default {
             columns: [
                 {
                     title: '會員編號',
-                    key: 'memid',
+                    key: 'mem_id',
                     width: '120px'
                 },
                 {
                     title: '帳號/信箱',
-                    key: 'mememail',
+                    key: 'mem_email',
                     width: '170px'
                 },
                 {
                     title: '姓名',
-                    key: 'memname',
+                    key: 'mem_name',
                     width: '120px'
 
                 },
                 {
                     title: '連絡電話',
-                    key: 'memtel',
+                    key: 'mem_tel',
                     width: '130px'
                 },
                 {
                     title: '創建日期',
-                    key: 'memcreate',
+                    key: 'mem_create',
                     width: '120px',
                 },
                 {
@@ -83,32 +85,34 @@ export default {
                     }
                 },
             ],
-            data: [
-                {
-                    memid: '1',
-                    mememail: 'asd@gmail.com',
-                    memname: '雄問安',
-                    memtel: '0912345678',
-                    memcreate: '2024.01.01',
-                    manage: '',
-                },
-                {
-                    memid: '1',
-                    mememail: 'asd@gmail.com',
-                    memname: '雄問安',
-                    memtel: '0912345678',
-                    memcreate: '2024.01.01',
-                    manage: '',
-                },
-                {
-                    memid: '1',
-                    mememail: 'asd@gmail.com',
-                    memname: '雄問安',
-                    memtel: '0912345678',
-                    memcreate: '2024.01.01',
-                    manage: '',
-                },
-            ]
+            // data: [
+            //     {
+            //         memid: '1',
+            //         mememail: 'asd@gmail.com',
+            //         memname: '雄問安',
+            //         memtel: '0912345678',
+            //         memcreate: '2024.01.01',
+            //         manage: '',
+            //     },
+            //     {
+            //         memid: '1',
+            //         mememail: 'asd@gmail.com',
+            //         memname: '雄問安',
+            //         memtel: '0912345678',
+            //         memcreate: '2024.01.01',
+            //         manage: '',
+            //     },
+            //     {
+            //         memid: '1',
+            //         mememail: 'asd@gmail.com',
+            //         memname: '雄問安',
+            //         memtel: '0912345678',
+            //         memcreate: '2024.01.01',
+            //         manage: '',
+            //     },
+            // ]
+            displayData: [],
+
         }
     },
     setup() {
@@ -118,10 +122,29 @@ export default {
         }
     },
     mounted() {
-        fetch(`${import.meta.env.BASE_URL}adminmember.json`)
-            .then(res => res.json())
+        const body = {};
+        let url = path + 'member_getData.php';
+
+        fetch(url, {
+            method: "POST",
+            body: JSON.stringify(body)
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok ' + res.statusText);
+                }
+                return res.json();
+            })
             .then(json => {
-                this.mem = json;
+                // 確認有沒有response
+                console.log(json);
+                // 備份還原用
+                this.responseData = json["data"]["list"];
+                // 顯示用
+                this.displayData = json["data"]["list"];
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
             });
     },
     methods: {
@@ -173,7 +196,7 @@ export default {
                 background-color: white;
                 border: 1px solid #B1241A;
                 color: #B1241A;
-                cursor:pointer;
+                cursor: pointer;
             }
         }
 
@@ -187,7 +210,7 @@ export default {
         }
 
         .member-table {
-            width: 781px;
+            width: 800px;
             text-align: center;
             margin: 3% auto 0;
             font-family: "Noto Serif HK", serif;

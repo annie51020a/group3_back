@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import {path} from "../../../path.js";
+
 import { useAdminStore } from '@/store/adminState.js'; // 引入 Pinia store
 
 export default {
@@ -41,8 +43,9 @@ export default {
                     account: this.textData,
                     password: this.pswData
                 };
+                let url = path + 'loginData.php';
 
-                const response = await fetch(`http://localhost/g3_php/loginData.php`, {
+                const response = await fetch(url, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

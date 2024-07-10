@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import {path} from "../../../path.js";
+import {path} from '../../path.js';
 import MenuList from '@/components/home/MenuList.vue';
 import AdminInfoEdit from '@/components/layout/AdminInfoEdit.vue';
 import AdminInfoView from '@/components/layout/AdminInfoView.vue';

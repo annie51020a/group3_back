@@ -17,7 +17,7 @@
         </Space>
       </div>
 
-      <Table class="news-table" stripe :columns="columns" :data="data"></Table><!-- 表格 -->
+      <Table class="news-table" stripe height=350 :columns="columns" :data="displayData"></Table><!-- 表格 -->
     </div>
   </section>
 </template>
@@ -27,7 +27,7 @@
 import MenuList from '@/components/home/MenuList.vue';
 import { resolveComponent } from 'vue';
 import { useAdminStore } from '@/store/adminState.js';
-
+import { path } from '../../path.js';
 
 export default {
   components: {
@@ -38,38 +38,38 @@ export default {
       columns: [
         {
           title: '編號',
-          key: 'newsid',
+          key: 'news_id',
           width: '60px'
         },
         {
           title: '消息圖片',
-          key: 'newspic',
+          key: 'news_pic',
           width: '60px'
         },
         {
           title: '消息標題',
-          key: 'newstitle',
+          key: 'news_title',
           width: '120px'
 
         },
         {
           title: '消息分類',
-          key: 'newsclass',
+          key: 'news_class',
           width: '120px'
         },
         {
           title: '消息內容',
-          key: 'newscontent',
-          width: '120px',
+          key: 'news_content',
+          width: '400px',
         },
         {
           title: '上傳時間',
-          key: 'createdate',
+          key: 'news_date',
           width: '100px',
         },
         {
           title: '狀態',
-          key: 'state',
+          key: 'news_state',
           width: '100px',
           render: (h, params) => {
             return h(resolveComponent('Switch'), {
@@ -102,28 +102,30 @@ export default {
           }
         }
       ],
-      data: [
-        {
-          newsid: '1',
-          newspic: '消息圖片',
-          newstitle: '高雄市油紙傘...',
-          newsclass: '舉辦活動（工...',
-          newscontent: '傳統油紙傘開...',
-          createdate: '2023.06.01',
-          state: '',
-          manage: '',
-        },
-        {
-          newsid: '1',
-          newspic: '消息圖片',
-          newstitle: '高雄市油紙傘...',
-          newsclass: '舉辦活動（工...',
-          newscontent: '傳統油紙傘開...',
-          createdate: '2023.06.01',
-          state: '',
-          manage: '',
-        },
-      ]
+      // data: [
+      //   {
+      //     newsid: '1',
+      //     newspic: '消息圖片',
+      //     newstitle: '高雄市油紙傘...',
+      //     newsclass: '舉辦活動（工...',
+      //     newscontent: '傳統油紙傘開...',
+      //     createdate: '2023.06.01',
+      //     state: '',
+      //     manage: '',
+      //   },
+      //   {
+      //     newsid: '1',
+      //     newspic: '消息圖片',
+      //     newstitle: '高雄市油紙傘...',
+      //     newsclass: '舉辦活動（工...',
+      //     newscontent: '傳統油紙傘開...',
+      //     createdate: '2023.06.01',
+      //     state: '',
+      //     manage: '',
+      //   },
+      // ]
+      displayData: [],
+
     }
   },
   setup() {
@@ -133,10 +135,29 @@ export default {
     }
   },
   mounted() {
-    fetch(`${import.meta.env.BASE_URL}adminmember.json`)
-      .then(res => res.json())
+    const body = {};
+    let url = path + 'news_getData.php';
+
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify(body)
+    })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Network response was not ok ' + res.statusText);
+        }
+        return res.json();
+      })
       .then(json => {
-        this.mem = json;
+        // 確認有沒有response
+        console.log(json);
+        // 備份還原用
+        this.responseData = json["data"]["list"];
+        // 顯示用
+        this.displayData = json["data"]["list"];
+      })
+      .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
       });
   },
   methods: {
@@ -188,7 +209,7 @@ export default {
         background-color: white;
         border: 1px solid #B1241A;
         color: #B1241A;
-        cursor:pointer;
+        cursor: pointer;
 
       }
     }
@@ -211,7 +232,7 @@ export default {
     }
 
     .news-table {
-      width: 781px;
+      width: 800px;
       text-align: center;
       margin: 3% auto 0;
       font-family: "Noto Serif HK", serif;

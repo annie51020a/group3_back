@@ -17,7 +17,7 @@
                 </Space>
             </div>
 
-            <Table class="product-table" stripe :columns="columns" :data="data"></Table><!-- 表格 -->
+            <Table class="product-table" stripe height=350 :columns="columns" :data="displayData"></Table><!-- 表格 -->
 
             <!-- 新增/編輯活動 -->
             <div class="product-info-box" id="product-edit">
@@ -51,8 +51,7 @@ import { resolveComponent } from 'vue';
 import { useAdminStore } from '@/store/adminState.js';
 import ProductInfoEdit from '@/components/layout/ProductInfoEdit.vue';
 import ProductInfoNew from '@/components/layout/ProductInfoNew.vue';
-
-
+import {path} from '../../path.js';
 
 export default {
     components: {
@@ -65,34 +64,34 @@ export default {
             columns: [
                 {
                     title: '商品編號',
-                    key: 'prodid',
+                    key: 'prod_id',
                     width: '80px'
                 },
                 {
                     title: '商品分類',
-                    key: 'prodcategory',
+                    key: 'prod_category',
                     width: '80px'
                 },
                 {
                     title: '商品圖片1',
-                    key: 'prodimg1',
+                    key: 'prod_img1',
                     width: '120px'
 
                 },
                 {
                     title: '商品名稱',
-                    key: 'prodname',
+                    key: 'prod_name',
                     width: '100px'
                 },
                 {
                     title: '商品價格',
-                    key: 'prodprice',
+                    key: 'prod_price',
                     width: '90px',
                 },
                 {
                     title: '商品描述',
-                    key: 'proddesc',
-                    width: '120px',
+                    key: 'prod_desc',
+                    width: '400px',
                 },
                 {
                     title: '商品編輯',
@@ -138,18 +137,20 @@ export default {
                     }
                 }
             ],
-            data: [
-                {
-                    prodid: '1',
-                    prodcategory: '圖案',
-                    prodimg1: '商品圖片1',
-                    prodname: '數字精緻手工油紙傘',
-                    prodprice: 'NT$699',
-                    proddesc: '手工繪製數字圖案油紙傘，經典設計，適合收藏與實用。',
-                    edit: '編輯',
-                    delete: '刪除',
-                },
-            ]
+            // data: [
+            //     {
+            //         prodid: '1',
+            //         prodcategory: '圖案',
+            //         prodimg1: '商品圖片1',
+            //         prodname: '數字精緻手工油紙傘',
+            //         prodprice: 'NT$699',
+            //         proddesc: '手工繪製數字圖案油紙傘，經典設計，適合收藏與實用。',
+            //         edit: '編輯',
+            //         delete: '刪除',
+            //     },
+            // ]
+            displayData: [],
+
         }
     },
     setup() {
@@ -159,10 +160,29 @@ export default {
         }
     },
     mounted() {
-        fetch(`${import.meta.env.BASE_URL}adminmember.json`)
-            .then(res => res.json())
+        const body = {};
+        let url = path + 'prod_getData.php';
+
+        fetch(url, {
+            method: "POST",
+            body: JSON.stringify(body)
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok ' + res.statusText);
+                }
+                return res.json();
+            })
             .then(json => {
-                this.mem = json;
+                // 確認有沒有response
+                console.log(json);
+                // 備份還原用
+                this.responseData = json["data"]["list"];
+                // 顯示用
+                this.displayData = json["data"]["list"];
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
             });
     },
     methods: {
@@ -278,7 +298,7 @@ export default {
         }
 
         .product-table {
-            width: 781px;
+            width: 800px;
             text-align: center;
             margin: 3% auto 0;
             font-family: "Noto Serif HK", serif;

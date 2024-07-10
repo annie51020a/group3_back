@@ -22,7 +22,7 @@
                 <button class="add-activity" @click="viewInfoBoxActivity()">+新增</button>
             </div>
 
-            <Table class="activity-table" stripe :columns="columns" :data="data"></Table><!-- 表格 -->
+            <Table class="activity-table" stripe height=350 :columns="columns" :data="displayData"></Table><!-- 表格 -->
         </div>
 
         <!-- 新增/編輯活動 -->
@@ -52,6 +52,8 @@ import ActivityMemberList from '@/components/layout/ActivityMemberList.vue';
 
 import { resolveComponent } from 'vue';
 import { useAdminStore } from '@/store/adminState.js';
+import {path} from '../../path.js';
+
 
 
 export default {
@@ -66,33 +68,33 @@ export default {
             columns: [
                 {
                     title: '活動名稱',
-                    key: 'actname',
+                    key: 'act_name',
                     width: '120px'
                 },
                 {
                     title: '費用',
-                    key: 'actprice',
+                    key: 'act_price',
                     width: '100px'
                 },
                 {
                     title: '地點',
-                    key: 'actloc',
+                    key: 'act_loc',
                     width: '120px'
 
                 },
                 {
                     title: '活動狀態',
-                    key: 'actstate',
+                    key: 'act_state',
                     width: '100px'
                 },
                 {
                     title: '報名人數',
-                    key: 'memnum',
+                    key: 'mem_num',
                     width: '100px',
                 },
                 {
                     title: '名單',
-                    key: 'memlist',
+                    key: 'mem_list',
                     width: '120px',
                     render: (h) => {
                         return h('div', [
@@ -134,35 +136,37 @@ export default {
                     }
                 }
             ],
-            data: [
-                {
-                    actname: '傳統油紙傘創意體驗',
-                    actprice: 'NT$300 / 人',
-                    actloc: '高雄市前鎮區中華五路123號5樓',
-                    actstate: '進行中',
-                    memnum: '1/8',
-                    memlist: '',
-                    manage: '',
-                },
-                {
-                    actname: '傳統油紙傘創意體驗',
-                    actprice: 'NT$300 / 人',
-                    actloc: '高雄市前鎮區中華五路123號5樓',
-                    actstate: '進行中',
-                    memnum: '1/8',
-                    memlist: '',
-                    manage: '',
-                },
-                {
-                    actname: '傳統油紙傘創意體驗',
-                    actprice: 'NT$300 / 人',
-                    actloc: '高雄市前鎮區中華五路123號5樓',
-                    actstate: '進行中',
-                    memnum: '1/8',
-                    memlist: '',
-                    manage: '',
-                },
-            ]
+            // data: [
+            //     {
+            //         actname: '傳統油紙傘創意體驗',
+            //         actprice: 'NT$300 / 人',
+            //         actloc: '高雄市前鎮區中華五路123號5樓',
+            //         actstate: '進行中',
+            //         memnum: '1/8',
+            //         memlist: '',
+            //         manage: '',
+            //     },
+            //     {
+            //         actname: '傳統油紙傘創意體驗',
+            //         actprice: 'NT$300 / 人',
+            //         actloc: '高雄市前鎮區中華五路123號5樓',
+            //         actstate: '進行中',
+            //         memnum: '1/8',
+            //         memlist: '',
+            //         manage: '',
+            //     },
+            //     {
+            //         actname: '傳統油紙傘創意體驗',
+            //         actprice: 'NT$300 / 人',
+            //         actloc: '高雄市前鎮區中華五路123號5樓',
+            //         actstate: '進行中',
+            //         memnum: '1/8',
+            //         memlist: '',
+            //         manage: '',
+            //     },
+            // ],
+            displayData: [],
+
         }
     },
     setup() {
@@ -172,10 +176,29 @@ export default {
         }
     },
     mounted() {
-        fetch(`${import.meta.env.BASE_URL}adminmember.json`)
-            .then(res => res.json())
+        const body = {};
+        let url = path + 'activity_getData.php';
+
+        fetch(url, {
+            method: "POST",
+            body: JSON.stringify(body)
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok ' + res.statusText);
+                }
+                return res.json();
+            })
             .then(json => {
-                this.mem = json;
+                // 確認有沒有response
+                console.log(json);
+                // 備份還原用
+                this.responseData = json["data"]["list"];
+                // 顯示用
+                this.displayData = json["data"]["list"];
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
             });
     },
     methods: {
@@ -253,7 +276,7 @@ export default {
         }
 
         .activity-table {
-            width: 781px;
+            width: 800px;
             text-align: center;
             margin: 3% auto 0;
             font-family: "Noto Serif HK", serif;
