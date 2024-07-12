@@ -348,37 +348,38 @@ export default {
                 alert('發生錯誤');
             }
         },
+
+        // 資料庫載入客製化訂單
+        customizedOrder(){
+            const body = {}; 
+            let url = path + 'customized_order.php';
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok ' + res.statusText);
+                }
+                return res.json();
+            })
+            .then(json => {
+                this.customerdata = json["data"]["orders"];
+                // console.log(this.customerdata); // 確認有沒有response
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
+            });
+        },
+
     },
+
     mounted() {
-            
-        const body = {}; 
-        let url = path + 'customized_order.php';
-        fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(body)
-        })
-        .then(res => {
-            if (!res.ok) {
-                throw new Error('Network response was not ok ' + res.statusText);
-            }
-            return res.json();
-        })
-        .then(json => {
-            // this.customerdata = []; // 顯示用
-            //     json.data.orders.[0].forEach(element => {
-            //         this.picArrays.icon.push({
-            //             img: element.icon_img
-            //         })
-            //     });
-            this.customerdata = json["data"]["orders"];
-            console.log(this.customerdata); // 確認有沒有response
-        })
-        .catch(error => {
-            console.error('There has been a problem with your fetch operation:', error);
-        });
+        this.customizedOrder();
+        
     }
 }
 </script>
