@@ -27,14 +27,19 @@
                 </TabPane>
             </Tabs>
         </div>
+
+        <div class="admin-info-box" id="admin-edit">
+                <CustomizedOrder :emp_id="selectedEmpId" :fetchData="shouldFetchData" @fetch-complete="onFetchComplete" />
+            </div>
     </section>
 </template>
 
 <script>
-
+import CustomizedOrder from '@/components/layout/CustomizedOrder.vue';
 import MenuList from '@/components/home/MenuList.vue';
 import { resolveComponent } from 'vue';
 import { useAdminStore } from '@/store/adminState.js';
+import { path } from '../../path.js';
 
 
 export default {
@@ -214,33 +219,53 @@ export default {
             customercolumns: [
                 {
                     title: '編號',
-                    key: 'ordernum',
-                    width: '60px'
+                    key: '_index',
+                    width: '60px',
+                    render: (h, params) => {
+                        return h('span', params.index + 1);  
+                    }
                 },
                 {
                     title: '訂單編號',
                     key: 'actorderid',
-                    width: '80px'
+                    width: '80px',
+                    render: (h, params) => {
+                        // 生成隨機數
+                        const randomNum = Math.floor(Math.random() * 900) + 100;  
+                        return h('span', params.row.actorderid || randomNum.toString());
+                    }
                 },
                 {
                     title: '會員帳號',
-                    key: 'mememail',
+                    key: 'ord_mail',
                     width: '160px'
 
                 },
                 {
-                    title: '活動名稱',
-                    key: 'actname',
-                    width: '140px'
+                    title: '訂單狀態',
+                    key: 'promo_state',
+                    width: '140px',
+                    render: (h, params) => {
+                        switch (params.row.promo_state) {
+                            case 0:
+                                return h('span', '未出貨');
+                            case 1:
+                                return h('span', '已出貨');
+                            case 2:
+                                return h('span', '已完成');
+                            default:
+                                return h('span', '消失了');
+                        }
+                    }
                 },
                 {
                     title: '創建日期',
-                    key: 'createdate',
+                    key: 'ord_date',
                     width: '120px',
                 },
                 {
-                    title: '訂單狀態',
-                    key: 'actorderstate',
+                    title: '備註',
+                    key: 'ord_note',
                     width: '100px',
                 },
                 {
@@ -255,11 +280,10 @@ export default {
                                 style: {
                                     marginRight: '5px'
                                 },
-                                on: {
-                                    click: () => {
+                                onclick: () => {
                                         this.show(params.index);// 查看功能寫在這
                                     }
-                                }
+                                
                             }, '編輯'),
                         ]);
 
@@ -267,33 +291,33 @@ export default {
                 },
             ],
             customerdata: [
-                {
-                    ordernum: '1',
-                    actorderid: '201',
-                    mememail: 'abc12345@gmail.com',
-                    actname: '油紙傘工作室1',
-                    createdate: '2024.05.18',
-                    actorderstate: '已完成',
-                    manage: ''
-                },
-                {
-                    ordernum: '1',
-                    actorderid: '201',
-                    mememail: 'abc12345@gmail.com',
-                    actname: '油紙傘工作室1',
-                    createdate: '2024.05.18',
-                    actorderstate: '已完成',
-                    manage: ''
-                },
-                {
-                    ordernum: '1',
-                    actorderid: '201',
-                    mememail: 'abc12345@gmail.com',
-                    actname: '油紙傘工作室1',
-                    createdate: '2024.05.18',
-                    actorderstate: '已完成',
-                    manage: ''
-                },
+                // {
+                //     ordernum: '1',
+                //     actorderid: '201',
+                //     mememail: 'abc12345@gmail.com',
+                //     actname: '油紙傘工作室1',
+                //     createdate: '2024.05.18',
+                //     actorderstate: '已完成',
+                //     manage: ''
+                // },
+                // {
+                //     ordernum: '1',
+                //     actorderid: '201',
+                //     mememail: 'abc12345@gmail.com',
+                //     actname: '油紙傘工作室1',
+                //     createdate: '2024.05.18',
+                //     actorderstate: '已完成',
+                //     manage: ''
+                // },
+                // {
+                //     ordernum: '1',
+                //     actorderid: '201',
+                //     mememail: 'abc12345@gmail.com',
+                //     actname: '油紙傘工作室1',
+                //     createdate: '2024.05.18',
+                //     actorderstate: '已完成',
+                //     manage: ''
+                // },
             ]
         }
     },
@@ -324,6 +348,37 @@ export default {
                 alert('發生錯誤');
             }
         },
+    },
+    mounted() {
+            
+        const body = {}; 
+        let url = path + 'customized_order.php';
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error('Network response was not ok ' + res.statusText);
+            }
+            return res.json();
+        })
+        .then(json => {
+            // this.customerdata = []; // 顯示用
+            //     json.data.orders.[0].forEach(element => {
+            //         this.picArrays.icon.push({
+            //             img: element.icon_img
+            //         })
+            //     });
+            this.customerdata = json["data"]["orders"];
+            console.log(this.customerdata); // 確認有沒有response
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+        });
     }
 }
 </script>
