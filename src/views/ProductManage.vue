@@ -21,7 +21,7 @@
 
             <!-- 新增/編輯活動 -->
             <div class="product-info-box" id="product-edit">
-                <ProductInfoEdit />
+                <ProductInfoEdit :prod_id="selectedprodId" :fetchData="shouldFetchData" @fetch-complete="onFetchComplete"/>
             </div>
 
             <div class="product-info-box" id="product-new">
@@ -97,7 +97,7 @@ export default {
                     title: '商品編輯',
                     key: 'edit',
                     width: '95px',
-                    render: (h) => {
+                    render: (h,params) => {
                         return h('div', [
                             h(resolveComponent('Button'), {
                                 type: 'default',
@@ -106,12 +106,14 @@ export default {
                                     marginRight: '5px'
                                 },
                                 onclick: () => {
+                                    this.selectedprodId = params.row.prod_id;
                                     const productEdit = document.getElementById('product-edit');
                                     productEdit.style.display = "flex";
+                                    this.shouldFetchData = true;
+                                    console.log(this.selectedprodId);
                                 }
                             }, '編輯'),
                         ]);
-
                     }
                 },
                 {
@@ -150,7 +152,7 @@ export default {
             //     },
             // ]
             displayData: [],
-
+            selectedprodId: null, // 新增的變量，用來存儲選中的員工 ID
         }
     },
     setup() {
@@ -206,6 +208,9 @@ export default {
         cancelDelete() {
             const deleteBox = document.querySelector('.delete-box');
             deleteBox.style.display = "none";
+        },
+        onFetchComplete() {
+            this.shouldFetchData = false;
         },
     }
 }

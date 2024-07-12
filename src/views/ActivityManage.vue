@@ -27,7 +27,7 @@
 
         <!-- 新增/編輯活動 -->
         <div class="activity-info-box" id="activity-edit">
-            <ActivityInfoEdit />
+            <ActivityInfoEdit :act_id="selectedactId" :fetchData="shouldFetchData" @fetch-complete="onFetchComplete"/>
         </div>
 
         <div class="activity-info-box" id="activity-new">
@@ -118,7 +118,7 @@ export default {
                     key: 'manage',
                     width: '120px',
 
-                    render: (h) => {
+                    render: (h,params) => {
 
                         return h('div', [
                             h(resolveComponent('Button'), {
@@ -128,8 +128,11 @@ export default {
                                     marginRight: '5px'
                                 },
                                 onClick: () => {
+                                    this.selectedactId = params.row.act_id;
                                     const viewInfoBoxActivity = document.getElementById('activity-edit');
                                     viewInfoBoxActivity.style.display = "flex";
+                                    this.shouldFetchData = true;
+                                    console.log(this.selectedactId);
                                 }
                             }, '編輯'),
                         ]);
@@ -166,6 +169,7 @@ export default {
             //     },
             // ],
             displayData: [],
+            selectedactId: null, // 新增的變量，用來存儲選中的員工 ID
 
         }
     },
@@ -218,7 +222,10 @@ export default {
         viewInfoBoxActivity(){
             const viewInfoBox = document.getElementById('activity-new');
             viewInfoBox.style.display = "flex";
-        }
+        },
+        onFetchComplete() {
+            this.shouldFetchData = false;
+        },
     }
 }
 </script>

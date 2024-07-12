@@ -2,15 +2,15 @@
     <Form class="product-info-form" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="120">
         <h3 class="product-info-title">編輯商品資訊</h3>
 
-        <FormItem label="商品編號" prop="productId">
-            <Input style="width: 400px;" v-model="formValidate.startDate" disabled></Input>
+        <FormItem label="商品編號" prop="prod_id">
+            <Input style="width: 400px;" v-model="formValidate.prod_id" disabled></Input>
         </FormItem>
         <FormItem label="創建時間" prop="startDate">
             <Input style="width: 400px;" v-model="formValidate.endDate" disabled></Input>
         </FormItem>
 
-        <FormItem label="商品分類" prop="productCategory">
-            <Input style="width: 400px;" v-model="formValidate.actName"></Input>
+        <FormItem label="商品分類" prop="prod_category">
+            <Input style="width: 400px;" v-model="formValidate.prod_category"></Input>
         </FormItem>
         <FormItem label="圖片檔案" prop="pictureFile">
             <Button>選擇圖片檔案</Button>
@@ -23,14 +23,14 @@
                 <div class="product-img-preview3"></div>
             </div>
         </FormItem>
-        <FormItem label="商品名稱" prop="productName">
-            <Input style="width: 400px;" v-model="formValidate.actDate"></Input>
+        <FormItem label="商品名稱" prop="prod_name">
+            <Input style="width: 400px;" v-model="formValidate.prod_name"></Input>
         </FormItem>
-        <FormItem label="費用" prop="productPrice">
-            <Input style="width: 400px;" v-model="formValidate.sessTime"></Input>
+        <FormItem label="費用" prop="prod_price">
+            <Input style="width: 400px;" v-model="formValidate.prod_price"></Input>
         </FormItem>
-        <FormItem label="商品描述" prop="productComment">
-            <Input style="width: 400px;" v-model="formValidate.actPrice"></Input>
+        <FormItem label="商品描述" prop="prod_desc">
+            <Input style="width: 400px;" v-model="formValidate.prod_desc"></Input>
         </FormItem>
         <div class="product-state">
             <p>商品狀態</p>
@@ -62,38 +62,119 @@
     </Form>
 </template>
 <script>
+import {path} from "../../../path.js";
+
 export default {
+    props: {
+        prod_id: {
+            type: String,
+            required: true
+        },
+        fetchData: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
             formValidate: {
-                productId: '',
+                prod_id: '',
                 startDate: '',
-                productCategory: '',
+                prod_category: '',
                 pictureFile: '',
                 productImg: '',
-                productName: '',
-                productPrice: '',
-                productComment: '',
+                prod_name: '',
+                prod_price: '',
+                prod_desc: '',
             },
             productState: false,
             hotState: false,
         }
     },
     methods: {
+        fetchMemberInfo() {
+            console.log("Fetching data for prod_id:", this.prod_id);
+            let url = path + 'prodInfoView.php';
+            fetch(url + `?prod_id=${this.prod_id}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Received data:", data);
+                    if (data.code === 200 && data.data) {
+                        this.formValidate = {
+                            prod_id: data.data.prod_id || '',
+                            prod_category: data.data.prod_category || '',
+                            prod_name: data.data.prod_name || '',
+                            prod_price: data.data.prod_price || '',
+                            prod_desc: data.data.prod_desc || '',
+                        };
+                    } else {
+                        console.error("Error in data:", data.msg);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching member info:', error);
+                })
+                .finally(() => {
+                    this.$emit('fetch-complete');
+                });
+        },
         handleSubmit(name) {
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    this.$Message.success('Success!');
+                    let url = path + 'prodInfoEdit.php';
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(this.formValidate)
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.code === 200) {
+                                this.$Message.success('保存成功!');
+                            } else {
+                                this.$Message.error('保存失敗: ' + data.msg);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error updating member info:', error);
+                            this.$Message.error('保存失敗!');
+                        });
                 } else {
-                    this.$Message.error('Fail!');
+                    this.$Message.error('保存失敗!');
                 }
-            })
+            });
         },
         cancel() {
             const productInfoBox = document.getElementById('product-edit');
             productInfoBox.style.display = 'none';
         },
-
+    },
+    watch: {
+        prod_id: {
+            immediate: true,
+            handler(newVal) {
+                if (newVal) {
+                    this.fetchMemberInfo();
+                }
+            }
+        }
+    },
+    mounted() {
+        if (this.prod_id) {
+            this.fetchMemberInfo();
+        }
     }
 }
 </script>
