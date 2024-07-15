@@ -333,6 +333,8 @@ export default {
             .then(json => {
                 this.mem = json;
             });
+
+        this.customizedOrder();
     },
     methods: {
         async memsignout() {
@@ -377,10 +379,6 @@ export default {
 
     },
 
-    mounted() {
-        this.customizedOrder();
-        
-    }
 }
 </script>
 

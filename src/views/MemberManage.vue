@@ -111,7 +111,12 @@ export default {
             //         manage: '',
             //     },
             // ]
-            displayData: [],
+            displayData: [
+                {
+                    mem_tel:'',
+
+                }
+            ],
 
         }
     },
@@ -121,9 +126,16 @@ export default {
             store,
         }
     },
+    computed:{
+        setUserData(displayData) {
+            this.displayData = displayData;
+            console.log(this.displayData);
+            return this.displayData.mem_tel = '0' + this.displayData.mem_tel; // 電話 + 0
+        },
+    },
     mounted() {
         const body = {};
-        let url = path + 'member_getData.php';
+        let url = path + 'member_data.php';
 
         fetch(url, {
             method: "POST",
@@ -148,6 +160,7 @@ export default {
             });
     },
     methods: {
+        
         async memsignout() {
             try {
                 const store = useAdminStore(); // 獲取 Pinia store
